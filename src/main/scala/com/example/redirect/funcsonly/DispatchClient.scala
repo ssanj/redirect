@@ -7,12 +7,17 @@ object DispatchClient {
 
   class Dispatch
 
-  def fetch: Uri => Future[HttpResult[Dispatch]] = uri => {
+  //ignore SSL cert errors
+  def connect(): Http = Http.withConfiguration(_.setAcceptAnyCertificate(true))
+
+  def shutdown(http: Http): Unit = http.shutdown()
+
+  def fetch(http: Http): Uri => Future[HttpResult[Dispatch]] = uri => {
     val svc =
       if (uri.value.startsWith("https")) url(uri.value).secure
       else url(uri.value)
 
-    Http.default(svc).map { response =>
+    http(svc).map { response =>
       new HttpResult[Dispatch] {
         override val statusCode: Option[StatusCode]    =
           Try(response.getStatusCode).fold[Option[StatusCode]](_ => None, sc => Option(StatusCode(sc)))

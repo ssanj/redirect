@@ -49,5 +49,5 @@ final case class UnhandledStatusCode(uri:Uri, statusCode: StatusCode) extends Er
 
 sealed trait NextInstr
 final case class Error(value: ErrorType) extends NextInstr
-final case class Continue(prevLocation: Uri, nextLocation: Uri) extends NextInstr
+final case class Continue(prevLocation: Uri, statusCode: StatusCode, nextLocation: Uri) extends NextInstr
 final case class Done(prevLocation: Uri,  statusCode: StatusCode) extends NextInstr
