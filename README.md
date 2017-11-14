@@ -8,13 +8,14 @@ This is also a proof-of-concept to investigate different ways of implementing th
 2. If there are any errors along the way locations that were retrieve prior should not be lost. We still need a record of what succeeded before the error.
 3. The final result should be a list of domains that were navigated to until either a successful result or an error was received.
 
-  http://domainA.xyz
-  https://domain.com
-  https://aaa.domain.com
+  - http://domainA.xyz [301]
+  - https://domain.com [302]
+  - https://aaa.domain.com [200]
 
   ------
-
+  [Error]
   UnknownHostException - Could not find host aaa.domain.com.
+  [stacktrace]
 
 4. Any errors should be logged out as well.
 5. Should be stack safe.
