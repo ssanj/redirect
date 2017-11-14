@@ -13,6 +13,9 @@ package com.example.redirect.funcsonly
 trait HttpResult[A] {
   val statusCode: Option[StatusCode]
   val headers: Map[String, Seq[String]]
+
+  def location: Option[Location] =
+    headers.get("Location").flatMap(_.headOption.map(uri => Location(Uri(uri))))
 }
 
 final case class Uri(value: String)
