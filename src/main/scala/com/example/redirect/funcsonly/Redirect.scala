@@ -33,12 +33,7 @@ object Redirect {
        }
      } recover {
        case NonFatal(e) =>
-        // error(s"unexpected error: ${e.getMessage}").map(_ => e.printStackTrace())
-        import java.io.{ByteArrayOutputStream, PrintStream}
-        val bout = new ByteArrayOutputStream()
-        e.printStackTrace(new PrintStream(bout, true))
-        val st = new String(bout.toByteArray, "UTF-8")
-        LOGGER.error(s"unexpected error: ${e.getMessage}\n${st}${heading("Error")}")
+        LOGGER.error(s"unexpected error: ${e.getMessage}\n${stacktrace(e)}${footer("Error")}")
      }
   }
 
@@ -51,11 +46,11 @@ object Redirect {
       flatMap {_ => Redirect(Uri.join(prevLocation, nextLocation), fetch) }
   }
 
-  private def heading(value: String): String = s"\n--${value}--"
+  private def footer(value: String): String = s"\n--${value}--"
 
   private def output(message: String, log: String => Unit)(implicit ec: ExecutionContext): Future[Unit] = Future(log(message))
 
-  private def done(message: String)(implicit ec: ExecutionContext): Future[Unit] = output(message + heading("Done"), LOGGER.info _)
+  private def done(message: String)(implicit ec: ExecutionContext): Future[Unit] = output(message + footer("Done"), LOGGER.info _)
 
-  private def error(message: String)(implicit ec: ExecutionContext): Future[Unit] = output(message + heading("Error"), LOGGER.error _)
+  private def error(message: String)(implicit ec: ExecutionContext): Future[Unit] = output(message + footer("Error"), LOGGER.error _)
 }
