@@ -18,7 +18,26 @@ trait HttpResult[A] {
     headers.get("Location").flatMap(_.headOption.map(uri => Location(Uri(uri))))
 }
 
-final case class Uri(value: String)
+final case class Uri(value: String) {
+  val endsWithSlash: Boolean = value.endsWith("/")
+  val startsWithSlash: Boolean =  value.startsWith("/")
+  val withoutEndSlash: Uri = if (endsWithSlash) Uri(value.take(value.length - 1)) else this
+  val isAbsolute: Boolean = value.startsWith("http")
+  val isRelative: Boolean = !isAbsolute
+}
+
+object Uri {
+  def join(prevLocation: Uri, nextLocation: Uri): Uri = {
+    if (nextLocation.isRelative) {
+      (prevLocation.endsWithSlash, nextLocation.startsWithSlash) match {
+        case (true, true)           => Uri(s"${prevLocation.withoutEndSlash.value}${nextLocation.value}")
+        case (_, true) | (true, _)  => Uri(s"${prevLocation.value}${nextLocation.value}")
+        case (false, false)         => Uri(s"${prevLocation.value}/${nextLocation.value}")
+      }
+    } else nextLocation
+  }
+}
+
 final case class StatusCode(value: Int)
 final case class Location(value: Uri)
 

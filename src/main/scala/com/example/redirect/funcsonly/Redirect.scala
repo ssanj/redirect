@@ -43,15 +43,7 @@ object Redirect {
                       fetch: Uri => Future[HttpResult[A]])(
                       implicit ec: ExecutionContext): Future[Unit] = {
     output(s"${prevLocation.value}", LOGGER.info _).
-      flatMap {_ => Redirect(resolveRelativeUri(prevLocation, nextLocation), fetch) }
-  }
-
-  private def resolveRelativeUri(prevLocation: Uri, nextLocation: Uri): Uri = {
-    if (!nextLocation.value.startsWith("http")) {
-      //TODO: Fix
-      if (prevLocation.value.endsWith("/")) Uri(s"${prevLocation.value}${nextLocation.value}")
-      else Uri(s"${prevLocation.value}/${nextLocation.value}")
-    } else nextLocation
+      flatMap {_ => Redirect(Uri.join(prevLocation, nextLocation), fetch) }
   }
 
   private def output(message: String, log: String => Unit)(implicit ec: ExecutionContext): Future[Unit] = Future(log(message))
