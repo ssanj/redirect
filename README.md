@@ -1,10 +1,10 @@
 # Redirect #
 
-A client that logs 301 and 302 redirects receive when navigating to a domain.
+A client that logs 301 and 302 redirects received when navigating to a domain.
 
 This is also a proof-of-concept to investigate different ways of implementing the following requirements:
 
-1. Handle errors gracefully - Not NonFatal errors thrown
+1. Handle errors gracefully - No NonFatal errors thrown
 2. If there are any errors along the way locations that were retrieve prior should not be lost. We still need a record of what succeeded before the error.
 3. The final result should be a list of domains that were navigated to until either a successful result or an error was received.
 
