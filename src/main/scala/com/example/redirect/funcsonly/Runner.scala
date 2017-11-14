@@ -10,7 +10,7 @@ object Runner {
   val LOGGER = LoggerFactory.getLogger("com.example.redirect.funcsonly.Runner");
 
   def main(args: Array[String]): Unit = {
-    // val uri = Uri("http://uniqueimprints.com")
+    // val uri = Uri("http://uriniqueimprints.com")
     val uri = Uri("http://realcommercial.com.au")
     val resultF = Redirect[Dispatch](uri, DispatchClient.fetch)
     Await.ready(resultF, 20.seconds)
