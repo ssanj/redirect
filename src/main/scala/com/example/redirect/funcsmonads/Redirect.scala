@@ -12,7 +12,7 @@ object Redirect {
         (uri, result.statusCode, result.location) match {
           case (uri, None, _)                                                     => M.pure(NoStatusCode(uri).asLeft[Done])
           case (uri, Some(sc), _)   if (sc.value / 100 == 2)                      => M.pure(Done(Navigation(uri, sc) +: navs).asRight[ErrorType])
-          case (uri, Some(sc), Some(loc)) if (sc.value == 301 || sc.value == 302) => Redirect(loc.value, fetch, Navigation(uri, sc) +: navs)
+          case (uri, Some(sc), Some(loc)) if (sc.value == 301 || sc.value == 302) => Redirect(Uri.join(uri, loc.value), fetch, Navigation(uri, sc) +: navs)
           case (uri, Some(sc), None) if (sc.value == 301 || sc.value == 302)      => M.pure(NoLocation(uri, sc).asLeft[Done])
           case (uri, Some(sc), _)                                                 => M.pure(UnhandledStatusCode(uri, sc).asLeft[Done])
        }

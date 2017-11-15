@@ -12,7 +12,8 @@ object Runner extends LogSupport {
   override val LOGGER = LoggerFactory.getLogger(Runner.getClass);
 
   def main(args: Array[String]): Unit = {
-      val uri = Uri("http://uniqueimprints.com")
+      // val uri = Uri("http://uniqueimprints.com")
+      val uri = Uri("http://realcommercial.com.au")
       val connection = DispatchClient.connect()
       val resultFE: Future[Either[ErrorType, Done]] =
           Redirect[Future, Dispatch](uri, DispatchClient.fetch(connection), Vector.empty[Navigation])
