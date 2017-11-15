@@ -35,3 +35,5 @@ scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value
 
 initialCommands := "import com.example.redirect._"
 
+dependencyOverrides += "io.netty" % "netty-handler" % "4.0.51.Final"
+

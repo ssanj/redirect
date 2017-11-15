@@ -1,14 +1,17 @@
 package com.example.redirect.funcsmonads
 
+import scala.util.control.NonFatal
 import scala.language.higherKinds
 import cats.Monad
+import cats.ApplicativeError
 import cats.syntax.either._
+import cats.syntax.applicativeError._
 
 object Redirect {
 
-  //TODO: Handle errors
-  def apply[M[_], A](uri: Uri, fetch: Uri => M[HttpResult[A]], navs: Vector[Navigation])(implicit M: Monad[M]): M[Either[ErrorType, Done]] = {
-     M.flatMap(fetch(uri)) { result =>
+  def apply[M[_], A](uri: Uri, fetch: Uri => M[HttpResult[A]], navs: Vector[Navigation])(implicit M: Monad[M], ME: ApplicativeError[M, Throwable]): M[Either[ErrorType, Done]] = {
+     val result: M[Either[ErrorType, Done]] =
+      M.flatMap(fetch(uri)) { result =>
         (uri, result.statusCode, result.location) match {
           case (uri, None, _)                                                     => M.pure(NoStatusCode(uri).asLeft[Done])
           case (uri, Some(sc), _)   if (sc.value / 100 == 2)                      => M.pure(Done(Navigation(uri, sc) +: navs).asRight[ErrorType])
@@ -17,10 +20,9 @@ object Redirect {
           case (uri, Some(sc), _)                                                 => M.pure(UnhandledStatusCode(uri, sc).asLeft[Done])
        }
      }
-     //add MonadError here?
-     // recover {
-     //   case NonFatal(e) =>
-     //    LOGGER.error(s"unexpected error: ${e.getMessage}\n${stacktrace(e)}${footer("Error")}")
-     // }
+
+     result.recover {
+        case NonFatal(e) => UnhandledError(e).asLeft[Done]
+     }
   }
 }

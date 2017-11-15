@@ -1,6 +1,6 @@
-package com.example.redirect
+package com.example
 
-package object funcsonly {
+package object redirect {
 
   def stacktrace(t: Throwable): String = {
     import java.io.{ByteArrayOutputStream, PrintStream}

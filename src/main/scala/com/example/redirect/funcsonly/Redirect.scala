@@ -1,4 +1,5 @@
-package com.example.redirect.funcsonly
+package com.example.redirect
+package funcsonly
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext

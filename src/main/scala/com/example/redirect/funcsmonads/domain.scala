@@ -35,6 +35,7 @@ sealed trait ErrorType
 final case class NoLocation(uri: Uri, statusCode: StatusCode) extends ErrorType
 final case class NoStatusCode(uri: Uri) extends ErrorType
 final case class UnhandledStatusCode(uri:Uri, statusCode: StatusCode) extends ErrorType
+final case class UnhandledError(error: Throwable) extends ErrorType
 
 
 final case class Continue(prevLocation: Uri, statusCode: StatusCode, nextLocation: Uri)
